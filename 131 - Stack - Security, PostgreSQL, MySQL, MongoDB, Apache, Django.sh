@@ -107,7 +107,7 @@ source <ssinclude StackScriptID="122"> # lib-apache
 apache_worker_install
 system_record_etc_dir_changes "Installed apache" # SS124
 #apache_mod_wsgi_install
-apache_mod_wsgi_install_from_source "3.2" # install a more recent mod-wsgi version
+apache_mod_wsgi_install_from_source "3.3" # install a more recent mod-wsgi version
 system_record_etc_dir_changes "Installed mod-wsgi" # SS124
 apache_cleanup
 system_record_etc_dir_changes "Cleaned up apache config" # SS124
