@@ -92,6 +92,8 @@ function system_security_ufw_configure_basic {
     ufw default deny
 
     ufw allow ssh
+    ufw limit ssh/tcp
+
     ufw allow http
     ufw allow https
 
