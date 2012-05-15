@@ -103,7 +103,7 @@ function system_security_ufw_configure_basic {
 function restart_services {
 	# restarts upstart services that have a file in /tmp/needs-restart/
 	for service_name in $(ls /tmp/restart-* | cut -d- -f2-10); do
-		service service_name restart
+		service $service_name restart
 		rm -f /tmp/restart-$service_name
 	done
 }
