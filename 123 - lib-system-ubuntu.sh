@@ -12,13 +12,14 @@ function lower {
 }
 
 function system_add_user {
-    # $1 - username
-    # $2 - password
-    # $3 - groups
+    # system_add_user(username, password, groups, shell=/bin/bash)
     USERNAME=`lower $1`
     PASSWORD=$2
     SUDO_GROUP=$3
-    SHELL="/bin/bash"
+    SHELL=$4
+    if [ -z "$1" ]; then
+        SHELL="/bin/bash"
+    fi
     useradd --create-home --shell "$SHELL" --user-group --groups "$SUDO_GROUP" "$USERNAME"
     echo "$USERNAME:$PASSWORD" | chpasswd
 }
@@ -36,13 +37,12 @@ function system_add_system_user {
 }
 
 function system_get_user_home {
-    # $1 - username
+    # system_get_user_home(username)
     cat /etc/passwd | grep "^$1:" | cut --delimiter=":" -f6
 }
 
 function system_user_add_ssh_key {
-    # $1 - username
-    # $2 - ssh key
+    # system_user_add_ssh_key(username, ssh_key)
     USERNAME=`lower $1`
     USER_HOME=`system_get_user_home "$USERNAME"`
     sudo -u "$USERNAME" mkdir "$USER_HOME/.ssh"
@@ -52,8 +52,7 @@ function system_user_add_ssh_key {
 }
 
 function system_sshd_edit_bool {
-    # $1 - param name
-    # $2 - Yes/No
+    # system_sshd_edit_bool (param_name, "Yes"|"No")
     VALUE=`lower $2`
     if [ "$VALUE" == "yes" ] || [ "$VALUE" == "no" ]; then
         sed -i "s/^#*\($1\).*/\1 $VALUE/" /etc/ssh/sshd_config
@@ -69,22 +68,22 @@ function system_sshd_passwordauthentication {
 }
 
 function system_update_hostname {
-    # $1 - system hostname
-    if [ ! -n "$1" ]; then
+    # system_update_hostname(system hostname)
+    if [ -z "$1" ]; then
         echo "system_update_hostname() requires the system hostname as its first argument"
         return 1;
     fi
     echo $1 > /etc/hostname
     hostname -F /etc/hostname
-    echo -e "\n127.0.0.1 $1.local $1\n" >> /etc/hosts
+    echo -e "\n127.0.0.1 $1 $1.local\n" >> /etc/hosts
+}
+
+function system_security_logcheck {
+    aptitude -y install logcheck logcheck-database
 }
 
 function system_security_fail2ban {
     aptitude -y install fail2ban
-}
-
-function system_security_ufw_install {
-    aptitude -y install ufw
 }
 
 function system_security_ufw_configure_basic {
@@ -100,6 +99,3 @@ function system_security_ufw_configure_basic {
     ufw enable
 }
 
-function system_security_logcheck {
-    aptitude -y install logcheck logcheck-database
-}
