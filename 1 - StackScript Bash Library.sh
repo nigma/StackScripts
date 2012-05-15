@@ -35,7 +35,8 @@
 ###########################################################
 
 function system_update {
-	aptitude update
+	apt-get update
+	apt-get -y install aptitude
 	aptitude -y full-upgrade
 }
 
@@ -342,9 +343,9 @@ function wordpress_install {
 		do sed -i "0,/put your unique phrase here/s/put your unique phrase here/$(randomString 50)/" wp-config.php
 	done
 
-	sed -i 's/putyourdbnamehere/wordpress/' wp-config.php
-	sed -i 's/usernamehere/wordpress/' wp-config.php
-	sed -i "s/yourpasswordhere/$WPPASS/" wp-config.php
+	sed -i 's/database_name_here/wordpress/' wp-config.php
+	sed -i 's/username_here/wordpress/' wp-config.php
+	sed -i "s/password_here/$WPPASS/" wp-config.php
 
 	# http://downloads.wordpress.org/plugin/wp-super-cache.0.9.8.zip
 }
@@ -369,7 +370,7 @@ function goodstuff {
 function restartServices {
 	# restarts services that have a file in /tmp/needs-restart/
 
-	for service in $(ls /tmp/restart-* | cut -d- -f2); do
+	for service in $(ls /tmp/restart-* | cut -d- -f2-10); do
 		/etc/init.d/$service restart
 		rm -f /tmp/restart-$service
 	done
