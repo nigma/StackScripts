@@ -8,5 +8,6 @@
 
 function python_install {
     aptitude -y install python python-dev python-setuptools
-    easy_install virtualenv virtualenvwrapper pip
+    easy_install pip
+    pip install virtualenv virtualenvwrapper
 }
