@@ -14,26 +14,6 @@ function apache_mod_wsgi_install {
     aptitude -y install libapache2-mod-wsgi
 }
 
-function apache_mod_wsgi_install_from_source {
-    #$1 - version
-
-    VERSION=$1
-    pushd /tmp
-    wget http://modwsgi.googlecode.com/files/mod_wsgi-$VERSION.tar.gz
-    tar xvfz mod_wsgi-$VERSION.tar.gz
-    cd mod_wsgi-$VERSION
-    ./configure
-    make
-    make install
-    cd ..
-    rm -rf mod_wsgi-$VERSION
-    popd
-
-    echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
-
-    a2enmod wsgi
-}
-
 function apache_cleanup {
     a2dissite default # disable default vhost
 }
