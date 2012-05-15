@@ -39,5 +39,5 @@ function system_record_etc_dir_changes {
         else MESSAGE="$1"
     fi
     hg addremove /etc
-    hg commit -u root -m "$MESSAGE" /etc
+    hg commit -u root -m "$MESSAGE" /etc || echo > /dev/null # catch "nothing changed" return code
 }
