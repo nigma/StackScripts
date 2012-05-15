@@ -7,7 +7,7 @@
 # My ref: http://www.linode.com/?r=aadfce9845055011e00f0c6c9a5c01158c452deb
 
 function system_install_utils {
-    aptitude -y install htop bsd-mailx python-software-properties
+    aptitude -y install htop bsd-mailx python-software-properties zsh
 }
 
 function system_install_build {
