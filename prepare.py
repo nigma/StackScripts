@@ -99,7 +99,7 @@ def expand_script(content, mode="source"):
 
 def add_variables(content, args):
     # Add script variables
-    variables = "\n".join(
+    variables = "%s\n" % "\n".join(
         '%s="%s"' % (k,v) for k,v in sorted(args.__dict__.items()) if k.isupper()
     )
     lines = iter(content.splitlines())
@@ -109,7 +109,8 @@ def add_variables(content, args):
             content.append(line)
         else:
             content.append(variables)
-            content.extend(list(lines))
+            content.append(line)
+            content.extend(lines)
             break
     return "\n".join(content)
 
@@ -130,6 +131,6 @@ def main(stack_script):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or os.path.exists(sys.argv[1]):
+    if len(sys.argv) < 2 or not os.path.exists(sys.argv[1]):
         print "First argument must be a valid script name"
     main(sys.argv[1])
