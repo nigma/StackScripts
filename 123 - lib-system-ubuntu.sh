@@ -12,25 +12,25 @@ function lower {
 }
 
 function system_add_user {
-    # system_add_user(username, password, groups, shell=/bin/zsh)
+    # system_add_user(username, password, groups, shell=/bin/bash)
     USERNAME=`lower $1`
     PASSWORD=$2
     SUDO_GROUP=$3
     SHELL=$4
     if [ -z "$4" ]; then
-        SHELL="/bin/zsh"
+        SHELL="/bin/bash"
     fi
     useradd --create-home --shell "$SHELL" --user-group --groups "$SUDO_GROUP" "$USERNAME"
     echo "$USERNAME:$PASSWORD" | chpasswd
 }
 
 function system_add_system_user {
-    # system_add_system_user(username, home, shell=/bin/zsh)
+    # system_add_system_user(username, home, shell=/bin/bash)
     USERNAME=`lower $1`
     HOME_DIR=$2
     SHELL=$3
     if [ -z "$3" ]; then
-        SHELL="/bin/zsh"
+        SHELL="/bin/bash"
     fi
     useradd --system --create-home --home-dir "$HOME_DIR" --shell "$SHELL" --user-group $USERNAME
 }
