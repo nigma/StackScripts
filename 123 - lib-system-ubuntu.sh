@@ -105,6 +105,18 @@ function system_security_ufw_configure_basic {
     ufw enable
 }
 
+function system_configure_private_network {
+    # system_configure_private_network(private_ip)
+    PRIVATE_IP=$1
+    NETMASK="255.255.128.0"
+    cat >>/etc/network/interfaces <<EOF
+auto eth0:0
+iface eth0:0 inet static
+ address $PRIVATE_IP
+ netmask $NETMASK
+EOF
+}
+
 function restart_services {
 	# restarts upstart services that have a file in /tmp/needs-restart/
 	for service_name in $(ls /tmp/restart-* | cut -d- -f2-10); do
