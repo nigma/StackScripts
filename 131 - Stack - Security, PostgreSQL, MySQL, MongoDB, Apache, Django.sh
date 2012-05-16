@@ -39,7 +39,7 @@
 # <UDF name="django_user" label="Django project owner user" default="django" example="System user that will be used to run the mod-wsgi project process." />
 
 # <UDF name="sys_private_ip" Label="Private IP" default="" example="Configure network card to listen on this Private IP (if enabled in Linode/Remote Access settings tab). See http://library.linode.com/networking/configuring-static-ip-interfaces" />
-
+# <UDF name="setup_monit" label="Install Monit system monitoring?" oneof="Yes,No" default="Yes" />
 
 set -e
 set -u
@@ -188,6 +188,29 @@ fi
 restart_services
 restart_initd_services
 
+if [ "$SETUP_MONIT" == "Yes" ]; then
+    source <ssinclude StackScriptID="129"> # lib-monit
+    monit_install
+    system_record_etc_dir_changes "Installed Monit"
+
+    monit_configure_email "$NOTIFY_EMAIL"
+    monit_configure_web $(system_primary_ip)
+    system_record_etc_dir_changes "Configured Monit interfaces"
+
+    monit_def_system "$SYS_HOSTNAME"
+    monit_def_rootfs
+    monit_def_cron
+    monit_def_postfix
+    monit_def_ping_google
+    if [ "$SETUP_POSTGRESQL" == "Yes" ]; then monit_def_postgresql; fi
+    if [ "$SETUP_MYSQL" == "Yes" ]; then monit_def_mysql; fi
+    if [ "$SETUP_MONGODB" == "Yes" ]; then monit_def_mongodb; fi
+    if [ "$SETUP_APACHE" == "Yes" ]; then monit_def_apache; fi
+    #if [ "$SETUP_MEMCACHE" == "Yes" ]; then monit_def_memcached; fi
+    system_record_etc_dir_changes "Created Monit rules for installed services"
+    monit reload
+fi
+
 # Send info message
 cat > ~/setup_message <<EOD
 Hi,
@@ -199,8 +222,14 @@ EOD
 if [ "$SETUP_DJANGO_PROJECT" == "Yes" ]; then
     cat >> ~/setup_message <<EOD
 You can now navigate to http://${DJANGO_DOMAIN}/ to see your web server running.
+The Django project files are in $DJANGO_PROJECT_PATH/app.
 
-The Django project is created in $DJANGO_PROJECT_PATH/app.
+EOD
+fi
+
+if [ "$SETUP_MONIT" == "Yes" ]; then
+    cat >> ~/setup_message <<EOD
+Monit web interface is at http://${RDNS}:2812/ (use your system username/password).
 
 EOD
 fi
