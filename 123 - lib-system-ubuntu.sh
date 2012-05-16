@@ -112,3 +112,32 @@ function restart_services {
 		rm -f /tmp/restart-$service_name
 	done
 }
+
+# Maintain for compatibility with scripts using this library for Ubuntu 10.04
+
+function system_get_codename {
+    echo `lsb_release -sc`
+}
+
+function system_get_release {
+    echo `lsb_release -sr`
+}
+
+function system_sshd_pubkeyauthentication {
+    system_sshd_edit_bool "PubkeyAuthentication" "$1"
+}
+
+function system_update_locale_en_US_UTF_8 {
+    # locale-gen en_US.UTF-8
+    dpkg-reconfigure locales
+    update-locale LANG=en_US.UTF-8
+}
+
+function system_enable_universe {
+    sed -i 's/^#\(.*deb.*\) universe/\1 universe/' /etc/apt/sources.list
+    aptitude update
+}
+
+function system_security_ufw_install {
+    aptitude -y install ufw
+}
