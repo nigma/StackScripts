@@ -35,6 +35,11 @@ function system_add_system_user {
     useradd --system --create-home --home-dir "$HOME_DIR" --shell "$SHELL" --user-group $USERNAME
 }
 
+function system_lock_user {
+    # system_lock_user(username)
+    passwd -l "$1"
+}
+
 function system_get_user_home {
     # system_get_user_home(username)
     cat /etc/passwd | grep "^$1:" | cut --delimiter=":" -f6
