@@ -104,7 +104,8 @@ function django_configure_apache_virtualhost {
     Alias /robots.txt $PROJECT_PATH/app/webapp/static/robots.txt
     Alias /favicon.ico $PROJECT_PATH/app/webapp/static/favicon.ico
 
-    CustomLog "|/usr/sbin/rotatelogs $PROJECT_PATH/logs/access.log.%Y%m%d-%H%M 5M" combined
+    SetEnvIf User_Agent "monit/*" dontlog
+    CustomLog "|/usr/sbin/rotatelogs $PROJECT_PATH/logs/access.log.%Y%m%d-%H%M 5M" combined env=!dontlog
     ErrorLog "|/usr/sbin/rotatelogs $PROJECT_PATH/logs/error.log.%Y%m%d-%H%M 5M"
     LogLevel warn
 
