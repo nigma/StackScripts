@@ -115,6 +115,7 @@ iface eth0:0 inet static
  address $PRIVATE_IP
  netmask $NETMASK
 EOF
+    touch /tmp/restart_initd-networking
 }
 
 function restart_services {
@@ -122,6 +123,14 @@ function restart_services {
 	for service_name in $(ls /tmp/restart-* | cut -d- -f2-10); do
 		service $service_name restart
 		rm -f /tmp/restart-$service_name
+	done
+}
+
+function restart_initd_services {
+	# restarts upstart services that have a file in /tmp/needs-restart/
+	for service_name in $(ls /tmp/restart_initd-* | cut -d- -f2-10); do
+		/etc/init.d/$service_name restart
+		rm -f /tmp/restart_initd-$service_name
 	done
 }
 
