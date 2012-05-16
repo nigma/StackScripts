@@ -26,6 +26,7 @@ cat <<EOT >/etc/monit/conf.d/web-interface
     use address $1
     allow $(randomString 10):$(randomString 30)
     allow @sudo readonly
+    signature disable
 EOT
 ufw allow 2812/tcp
 }
@@ -72,10 +73,19 @@ cat <<EOT >/etc/monit/conf.d/cron.cfg
 EOT
 }
 
+function monit_def_sshd {
+cat <<EOT >/etc/monit/conf.d/sshd.cfg
+  check process sshd with pidfile /var/run/sshd.pid
+    start program "/etc/init.d/ssh start"
+    stop program "/etc/init.d/ssh stop"
+    # if failed port 22 protocol ssh then restart
+    # if 3 restarts within 3 cycles then timeout
+EOT
+}
 
 function monit_def_ping_google {
 cat <<EOT >/etc/monit/conf.d/ping_google.cfg
-  check host google-test with address google.com
+  check host google-ping with address google.com
     if failed port 80 proto http then alert
     group server
 EOT
@@ -198,9 +208,9 @@ cat <<EOT >/etc/monit/conf.d/apache2.cfg
     if totalmem > 200.0 MB for 5 cycles then alert
     if children > 250 then alert
     if loadavg(5min) greater than 10 for 8 cycles then stop
-    if failed host localhost port 80 protocol HTTP request / within 5 cycles then restart
+    if failed host localhost port 80 protocol HTTP request / within 2 cycles then restart
     if failed host localhost port 80 protocol apache-status
-        dnslimit > 25% or  loglimit > 80% or waitlimit < 20% then alert
+        dnslimit > 25% or  loglimit > 80% or waitlimit < 20% retry 2 within 2 cycles then alert
     if 5 restarts within 5 cycles then timeout
     depends on apache_bin
     depends on apache_rc
