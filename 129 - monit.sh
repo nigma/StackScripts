@@ -201,21 +201,21 @@ EOT
 function monit_def_apache {
 cat <<EOT >/etc/monit/conf.d/apache2.cfg
   check process apache with pidfile /var/run/apache2.pid
-    start program = "/etc/init.d/apache2 start" with timeout 30 seconds
+    start program = "/etc/init.d/apache2 start"
     stop  program = "/etc/init.d/apache2 stop"
     if cpu > 60% for 2 cycles then alert
     if cpu > 80% for 5 cycles then alert
     if totalmem > 200.0 MB for 5 cycles then alert
     if children > 250 then alert
     if loadavg(5min) greater than 10 for 8 cycles then stop
-    if failed host localhost port 80 protocol HTTP request / within 2 cycles then restart
+    if failed host localhost port 80 protocol HTTP request / within 2 cycles then alert
     if failed host localhost port 80 protocol apache-status
         dnslimit > 25% or  loglimit > 80% or waitlimit < 20% retry 2 within 2 cycles then alert
-    if 5 restarts within 5 cycles then timeout
+    #if 5 restarts within 5 cycles then timeout
     depends on apache_bin
     depends on apache_rc
     group www
-	
+
   check file apache_bin with path /usr/sbin/apache2
     if failed checksum then unmonitor
     if failed permission 755 then unmonitor
