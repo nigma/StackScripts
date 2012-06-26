@@ -84,6 +84,8 @@ function system_update_hostname {
 
 function system_security_logcheck {
     aptitude -y install logcheck logcheck-database
+    # configure email
+    # start after setup
 }
 
 function system_security_fail2ban {
@@ -119,19 +121,19 @@ EOF
 }
 
 function restart_services {
-	# restarts upstart services that have a file in /tmp/needs-restart/
-	for service_name in $(ls /tmp/restart-* | cut -d- -f2-10); do
-		service $service_name restart
-		rm -f /tmp/restart-$service_name
-	done
+    # restarts upstart services that have a file in /tmp/needs-restart/
+    for service_name in $(ls /tmp/ | grep restart-* | cut -d- -f2-10); do
+        service $service_name restart
+        rm -f /tmp/restart-$service_name
+    done
 }
 
 function restart_initd_services {
-	# restarts upstart services that have a file in /tmp/needs-restart/
-	for service_name in $(ls /tmp/restart_initd-* | cut -d- -f2-10); do
-		/etc/init.d/$service_name restart
-		rm -f /tmp/restart_initd-$service_name
-	done
+    # restarts upstart services that have a file in /tmp/needs-restart/
+    for service_name in $(ls /tmp/ | grep restart_initd-* | cut -d- -f2-10); do
+        /etc/init.d/$service_name restart
+        rm -f /tmp/restart_initd-$service_name
+    done
 }
 
 # Maintain for compatibility with scripts using this library for Ubuntu 10.04
