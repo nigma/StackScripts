@@ -204,7 +204,7 @@ restart_services
 restart_initd_services
 
 if [ "$SETUP_MONIT" == "Yes" ]; then
-    source <ssinclude StackScriptID="129"> # lib-monit
+    source <ssinclude StackScriptID="130"> # lib-monit
     monit_install
     system_record_etc_dir_changes "Installed Monit"
 
