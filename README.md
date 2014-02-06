@@ -1,3 +1,18 @@
+# Linode StackScripts
+
+
+### Please note
+
+These scripts may be a bit outdated now although the solution served me well on many occasions. I have now moved to Ansible and other configuration management tools that are just much metter than the bash scripts approach, although you may pick up some configs and scripting ideas from here.
+
+If there is an interest in a similar full-stack web-server setup go ahead and open a ticket and I can prepare a set of Ansible roles and playbooks with Nginx & uWSGI as the web server.
+
+
+-------------------
+
+### Original readme
+
+
 A Linode.com StackScript shell script that configures a complete web environment with Apache, PostgreSQL/MySQL/MongoDB, Python, mod_wsgi, virtualenv and Django.
 
 Optionally creates a PostgreSQL/MySQL user and database and installs MongoDB NoSQL database.
